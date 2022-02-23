@@ -13,6 +13,16 @@
 	<link href="https://fonts.googleapis.com/css2?family=Caveat&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
+		html, body {
+			width: 100%;
+			height: 100vh;
+			padding:0;
+			margin:0;
+			font-family: 'Montserrat';
+			box-sizing: border-box;
+			overflow-y: hidden;
+		}
+		
 		.cTooltip {
 			color:rgb(23, 3, 141);
 			height: 80px;
@@ -22,12 +32,16 @@
 			margin: 40px;
 			font-weight: 600;
 		}
-		html, body {
-			width: 100%;
-			height: 100vh;
-			padding:0;
-			margin:0;
-			font-family: 'Montserrat';
+		.bAboutMapBtn {
+			color: black;
+			font-weight: 500;
+		}
+		.aboutText {
+			border: 3px solid rgb(90, 90, 90);
+			font-size: 1.4em;
+			max-height:650px;
+			margin-top:70px;
+			font-weight: 600;
 		}
 		.info.legend  {
 			width: 300px;
@@ -47,16 +61,23 @@
 </head>
 <body  style="background-color:rgb(235, 235, 235);overflow-y: hidden;">
 <nav class="navbar " style="background: #002878 !important; color: white; border:1px solid rgb(235, 233, 233)">
-    <h1 class="display-5 text-uppercase mx-auto xxfw-bold">Facade Risk Levels</h1>
-    <a class="navbar-brand "><img src="dob_logo_white_transparent.png" width="80" height="auto" class="d-inline-block align-top" alt=""></a>
+<h1 class="display-5 text-uppercase mx-auto xxfw-bold">Facade Risk Levels</h1>
+<a class="navbar-brand "><img src="dob_logo_white_transparent.png" width="80" height="auto" class="d-inline-block align-top" alt=""></a>
 </nav> 
-
-<div class="container-fluid" style="overflow-y: hidden;padding:0">
-    <div class="container-fluid" id="map" style="height:89%;width:100%;border:1px solid rgb(158, 155, 154);pointer-events: all;">
-    </div>
-	<div class="" style="background-color:black;font-weight:600;color:white;height:6%/*50px*/">
-	<div style="margin:10px;"  class="float-start devsquad small "><a href="https://www1.nyc.gov/site/buildings/dob/analytics-reports.page" target="_blank">DOB Analytics</a> </div>
-	<div style="margin:10px;"  class="float-end devsquad small "><a href="https://www1.nyc.gov/home/terms-of-use.page" target="_blank">Terms of Use</a> </div>
+<div class="container-fluid" style="overflow-y: hidden;padding:0"> 
+<div class="container-fluid" id="map" style="height:89%;width:100%;border:1px solid rgb(158, 155, 154);pointer-events: all;">
+</div>
+<div class="" style="background-color:black;font-weight:600;color:white;height:6%/*50px*/">
+<div style="margin:10px;"  class="float-start devsquad small "><a href="https://www1.nyc.gov/site/buildings/dob/analytics-reports.page" target="_blank">DOB Analytics</a> </div>
+<div style="margin:10px;"  class="float-end devsquad small "><a href="https://www1.nyc.gov/home/terms-of-use.page" target="_blank">Terms of Use</a> </div>
+</div>
+</div> 
+<div class="offcanvas offcanvas-start aboutText" tabindex="-1" id="offcanvasLeft" aria-labelledby="offcanvasLeftLabel">
+<div class="offcanvas-header">
+<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+</div>
+<div class="offcanvas-body">
+This map displays a risk probability rating for all NYC buildings in the Façade Inspection Safety Program (FISP) Local Law 11 universe. Buildings with a higher prediction probability value are more likely to exhibit high-risk outcomes such as specific façade-related violations, unsafe conditions, or façade-related accidents. Risk scores may be used to better inform proactive enforcement actions. 		
 </div>
 </div>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>    
@@ -65,7 +86,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"  ></script>	
 <script>
 const map = L.map('map',{preferCanvas:true}).setView([40.714299, -74.0080041], 15);
-var options = {
+let options = {
 					key: '9277c3027dc546989ea28d048ffa9ee7',
 					limit: 10,
 					proximity: '40.791384, -73.883770',	
@@ -154,10 +175,18 @@ L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?
 							}
 						}
 			}).addTo(map);
+
+			let infoDiv = L.control({position: 'topleft'});
+			infoDiv.onAdd = function(map) {
+				let div = L.DomUtil.create('div', 'bAboutMap');
+				div.innerHTML=`<button class="btn btn-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">About Map</button>`
+				return div;
+			};
+			infoDiv.addTo(map);
 			let legend = L.control({position: 'bottomright'});
 			legend.onAdd = function (map) {
 						let div = L.DomUtil.create('div', 'info legend');
-						div.innerHTML=`<h5 style="text-align:center;font-weight:700;">Prediction Probability</h5><br>`
+						div.innerHTML=`<h5 style="text-align:center;font-weight:700;">Risk Probability</h5><br>`
 						for (var i = 0; i < vProbability.length; i++) {
 								div.innerHTML +=
 								`<div class="row" style="font-weight:700;font-size:1.2em;">            
