@@ -223,40 +223,27 @@ L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?
 
 				return div;
 			};
-
-
-
-
-
 			downloadDiv.addTo(map);	
-			let qqqqq=document.querySelector(".bDownloadData");
-			qqqqq.addEventListener("click", (e) => {
+			let bdlBtn=document.querySelector(".bDownloadData");
+			bdlBtn.addEventListener("click", (e) => {
 							e.preventDefault;
-							//event.stopImmediatePropagation();
-							myctr++;
+							event.stopImmediatePropagation();
                             let dataArray = [];
 							dataArray.push('Object_ID,BIN,Address,Borough,PredProb, Community_District,Year_Built, Stories,Building_Area')
 							for (let qv=0;  qv < data.features.length; qv++)  { 
-          						    dataArray.push( Object.values(data.features[qv].properties).toString());
+          						dataArray.push( Object.values(data.features[qv].properties).toString());
          					};
 							let file = new Blob([dataArray.join("\n")]);
-                            let filename = "FacadeRiskExport.csv";
-                            let filetype = "application/text";
 							savebtn=document.createElement('a');
-				savebtn.style.display="none";
-				savebtn.className="saveit";
-				savebtn.style.visibility="hidden";
-
-				document.body.prepend(savebtn);
-
-
-                            let _theLink = document.querySelector("a.saveit")
+							savebtn.style.display="none";
+							savebtn.className="saveit";
+							savebtn.style.visibility="hidden";
+							document.body.prepend(savebtn);
+                            let _theLink = document.querySelector("a.saveit");
                             _theLink.href = URL.createObjectURL(file);
-							_theLink.download = filename;
-							_theLink.click();
-							console.log(myctr);
-							savebtn.remove();
-                            }); //end eventlistener saveit
+							_theLink.download = "FacadeRiskExport.csv";
+							_theLink.click();savebtn.remove();
+            }); //end eventlistener saveit
 	});
 </script>
 </body>
