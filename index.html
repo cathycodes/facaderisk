@@ -83,6 +83,7 @@
       .bDownloadData * {
         text-decoration: none;
         color: black;
+        font-size: 1.2em;
       }
     </style>
   </head>
@@ -331,12 +332,19 @@
             event.stopImmediatePropagation();
             let dataArray = [];
             dataArray.push(
-              "Object_ID,BIN,Address,Borough,PredProb, Community_District,Year_Built, Stories,Building_Area"
+              "BIN,Address,Borough,Risk_Probability,Community_District"
             );
-            for (let qv = 0; qv < data.features.length; qv++) {
-              dataArray.push(
-                Object.values(data.features[qv].properties).toString()
-              );
+            for (let _q = 0, _str = ""; _q < data.features.length; _q++) {
+              _str = `${data.features[_q].properties.BIN_1},${
+                data.features[_q].properties.Address
+              },${data.features[_q].properties.Borough},${
+                data.features[_q].properties.PredProb
+              },${
+                data.features[_q].properties.Community_ == "nan"
+                  ? ""
+                  : data.features[_q].properties.Community_
+              }`;
+              dataArray.push(_str); //Object.values(data.features[_q].properties).toString()
             }
             let file = new Blob([dataArray.join("\n")]);
             savebtn = document.createElement("a");
